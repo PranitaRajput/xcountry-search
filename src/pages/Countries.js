@@ -7,6 +7,7 @@ import Header from "../components/Header";
     const API_URL = "https://restcountries.com/v3.1/all";
     const [countries , setCountries] = useState([]) ;
     const [filteredCountries, setFilteredCountries] = useState([]);
+    const [error, setError] = useState("");
 
 //     // console.log(countries);
 //     useEffect(() => {
@@ -27,6 +28,7 @@ useEffect(() => {
             setFilteredCountries(data);
         } catch (error) {
             console.error("Error fetching data:", error);
+            setError ("Failed to fetch country data. Please try again later.")
         }
     };
     fetchCountries();
@@ -53,11 +55,19 @@ const handleSearch = (query) => {
             }
         }>
             {/* <h1> Countries </h1>  */}
-            {filteredCountries.map((country) => (
-                <CountryCard name = {country.name.common} 
-                flagURL = {country.flags?.png || country.flags?.svg} 
-                key = {country.cca3} />
-            ))}
+            {error ? (
+                    <p style={{ color: "red" }}>{error}</p> // Display error if API call fails
+                ) : filteredCountries.length > 0 ? (
+                    filteredCountries.map((country) => (
+                        <CountryCard
+                            name={country.name.common}
+                            flagURL={country.flags?.png || country.flags?.svg}
+                            key={country.cca3}
+                        />
+                    ))
+                ) : (
+                    <p></p> // Display message for no results
+                )}
         </div>
         </>
     );
